@@ -39,11 +39,11 @@ module.exports = app;
 
 // var admin = require("firebase-admin");
 
-// var serviceAccount = require("./config/images-4493e-firebase-adminsdk-uhmp5-2ac4e64070.json");
+// var serviceAccount = require("./config/firebase-cert.json");
 
 // admin.initializeApp({
 //     credential: admin.credential.cert(serviceAccount),
-//     storageBucket: "images-4493e.firebasestorage.app",
+//     storageBucket: "images.firebasestorage.app",
 // });
 
 // //const firebaseApp = initializeApp(firebaseConfig);

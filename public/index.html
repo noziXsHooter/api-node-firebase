@@ -31,15 +31,9 @@
     </div>
     <div id="imageGrid" class="image-grid"></div>
 
-
-    <h1>Carregar Imagem</h1>
-    <button id="loadImageBtn">Carregar Imagem</button>
-    <div id="imageContainer"></div>
-
-
     <script>
         const grid = document.getElementById('imageGrid');
-        
+
         async function loadImages() {
             try {
                 const response = await fetch('api/images');
@@ -100,7 +94,6 @@
         });
 
         loadImages();
-
     </script>
 </body>
 </html>
