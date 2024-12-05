@@ -1,0 +1,106 @@
+<!-- public/index.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Upload de Imagens Firebase</title>
+    <style>
+        .image-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+            padding: 20px;
+        }
+        .image-item {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+        .upload-form {
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="upload-form">
+        <h2>Upload de Imagens</h2>
+        <form id="uploadForm">
+            <input type="file" id="imageInput" accept="image/*" required>
+            <button type="submit">Enviar</button>
+        </form>
+    </div>
+    <div id="imageGrid" class="image-grid"></div>
+
+
+    <h1>Carregar Imagem</h1>
+    <button id="loadImageBtn">Carregar Imagem</button>
+    <div id="imageContainer"></div>
+
+
+    <script>
+        const grid = document.getElementById('imageGrid');
+        
+        async function loadImages() {
+            try {
+                const response = await fetch('api/images');
+                
+                if (!response.ok) {
+                    throw new Error(`Erro ao carregar imagens: ${response.status} ${response.statusText}`);
+                }
+        
+                const { data: { urls } } = await response.json();
+        
+                // Limpa o conteúdo existente
+                grid.innerHTML = '';
+        
+                // Adiciona as imagens
+                urls.forEach(createImageElement);
+            } catch (error) {
+                console.error('Erro:', error.message);
+            }
+        }
+        
+        function createImageElement(url) {
+            const img = document.createElement('img');
+            img.src = url;
+            img.className = 'image-item';
+            grid.appendChild(img);
+        }
+
+        document.getElementById('uploadForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData();
+            const fileInput = document.getElementById('imageInput');
+            formData.append('image', fileInput.files[0]);
+
+            try {
+                const response = await fetch('api/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (!response.ok) {
+                    alert(`Erro: ${response.status} ${response.statusText}`);
+                    throw new Error(`Erro: ${response.status} ${response.statusText}`);
+                }
+        
+                // Assume que o servidor retorna um JSON com o URL da imagem
+                const result = await response.json(); 
+                const imageUrl = result.url; // Ajuste conforme o formato da resposta
+        
+                // Copiar URL para a área de transferência
+                await navigator.clipboard.writeText(imageUrl);
+                alert(`Imagem enviada com sucesso!\nA URL foi copiada para a área de transferência: ${imageUrl}`);
+
+                loadImages();
+                fileInput.value = '';
+            } catch (error) {
+                alert('Erro ao enviar imagem');
+            }
+        });
+
+        loadImages();
+
+    </script>
+</body>
+</html>
